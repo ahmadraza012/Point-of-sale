@@ -1,0 +1,41 @@
+.spinner{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 11;
+}
+.category{
+    border: 1px solid transparent
+}
+.category.active{
+    border: 1px solid green;
+}
+.register{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    flex-direction: column;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    border: 1px solid grey;
+}
+.info h2{
+    font-size: 22px;
+}
+.tabletitle h2{
+    font-size: 16px;
+}
+#invoice-pos{
+    background-color: #fff;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+.ant-modal{
+    width: 1200px !important;
+}
+.w-14{
+    width: 14%;
+}

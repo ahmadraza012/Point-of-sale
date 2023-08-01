@@ -1,0 +1,12 @@
+.ant-layout{
+    height: 100vh;
+}
+.ant-layout-content {
+    overflow-y: auto;
+}
+.ant-layout-header{
+    line-height: normal;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
