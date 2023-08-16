@@ -25,6 +25,12 @@ export const rootReducer = (state= initialState, action) => {
                 ...state,
                 cartItems: state.cartItems.map(item => item._id === action.payload._id ? {...item, singleQuantity:action.payload.singleQuantity} : item)
         };
+        case "UPDATE_CART_ITEMS":
+            return {
+              
+                cartItems: action.payload
+               
+        };
         case "UPDATE_CARTOONS":
             return {
                 ...state,
@@ -35,6 +41,7 @@ export const rootReducer = (state= initialState, action) => {
                 ...state,
                 cartItems: state.cartItems.filter(item => item._id !== action.payload._id)
             }
+        
         default: return state
     }
 }

@@ -89,6 +89,8 @@ const ItemsPage = () => {
       }
     }
   }
+
+  
   console.log(editItem)
 
   const handleDelete = async (record) => {
@@ -121,7 +123,7 @@ const ItemsPage = () => {
     },
     {
       title: "Price Single",
-      dataIndex: "price"
+      dataIndex: "priceSingle"
     },
     {
       title: "Price Cartoons",
@@ -168,7 +170,7 @@ const ItemsPage = () => {
             <Form.Item name="name" label="Name">
               <Input />
             </Form.Item>
-            <Form.Item name="price" label="Price Single">
+            <Form.Item name="priceSingle" label="Price Single">
               <Input />
             </Form.Item>
             <Form.Item name="priceCartoons" label="Price Cartoons">

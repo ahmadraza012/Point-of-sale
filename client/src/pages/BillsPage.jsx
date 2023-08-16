@@ -47,10 +47,7 @@ const BillsPage = () => {
             title: "Contact Number",
             dataIndex: "customerNumber"
         },
-        {
-            title: "Total Amount",
-            dataIndex: "subTotal"
-        },
+
         {
             title: "Paid Amount",
             dataIndex: "paidPayment"
@@ -60,14 +57,6 @@ const BillsPage = () => {
             dataIndex: "remainingPayment"
         },
 
-        // {
-        //     title: "Tax",
-        //     dataIndex: "tax"
-        // },
-        // {
-        //     title: "Discount",
-        //     dataIndex: "discount"
-        // },
         {
             title: "Total Amount",
             dataIndex: "totalAmount"
@@ -152,7 +141,7 @@ const BillsPage = () => {
                                                             <p className="itemtext">{item.name}</p>
                                                         </td>
                                                         <td className="tableItem pe-2 ">
-                                                            <p className="itemtext">{item.price}</p>
+                                                            <p className="itemtext">{item.priceSingle}</p>
                                                         </td>
                                                         <td className="tableItem pe-2 text-center">
                                                             <p className="itemtext">{item.singleQuantity}</p>
@@ -168,7 +157,7 @@ const BillsPage = () => {
                                                             <p className="itemtext">{item.discount} %</p>
                                                         </td>
                                                         <td className="tableItem pe-2 text-center">
-                                                            <p className="itemtext">{(item.singleQuantity * item.price ) + ( item.cartoonsQuantity * item.priceCartoons)}</p>
+                                                            <p className="itemtext">{(item.singleQuantity * item.priceSingle ) + ( item.cartoonsQuantity * item.priceCartoons)}</p>
                                                         </td>
                                                     </tr>
 
@@ -176,16 +165,7 @@ const BillsPage = () => {
                                             ))}
                                         </tbody>
                                         <tbody>
-                                            {/* <tr className="tabletitle">
-                                                <td></td>
-                                                <td></td>
-                                                <td className="rate text-center">
-                                                    <h2>Discount</h2>
-                                                </td>
-                                                <td className="payment text-center">
-                                                    <h2>{selectedBill.discount}</h2>
-                                                </td>
-                                            </tr> */}
+                                      
                                             <tr className="tabletitle">
                                                 <td></td>
                                                 <td></td>

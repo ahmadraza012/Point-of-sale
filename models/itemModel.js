@@ -5,12 +5,7 @@ const itemSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    price: {
-        type: Number,
-    },
-    priceCartoons: {
-        type: Number,
-    },
+
     category: {
         type: String,
         required: true
@@ -29,6 +24,12 @@ const itemSchema = mongoose.Schema({
         required: true
     },
     discount: {
+        type: Number,
+    },
+    priceSingle:{
+        type: Number,
+    },
+    priceCartoons:{
         type: Number,
     }
 },

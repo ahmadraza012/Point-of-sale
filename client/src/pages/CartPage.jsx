@@ -12,9 +12,9 @@ const CartPage = () => {
         subTotal: 0,
         remainingBlance: 0
     })
+
     const [billPopup, setBillPopup] = useState(false);
     const [records, setRecords] = useState([]);
-    const [filter, setFilter] = useState([]);
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const [form] = Form.useForm()
@@ -65,6 +65,8 @@ const CartPage = () => {
 
     }
     const { cartItems } = useSelector(state => state.rootReducer)
+
+    console.log(cartItems)
     const columns = [
         {
             title: "Name",
@@ -86,8 +88,14 @@ const CartPage = () => {
         },
         {
             title: "Price Cartoons",
-            dataIndex: "priceCartoons"
-        },
+            dataIndex: "_id",
+            render: (id, record) => (
+              <Input
+                value={record.priceCartoons}
+                onChange={(e) => handlePriceChange(record, e.target.value, "cartoons")}
+              />
+            ),
+          },
         {
             title: "Single Quantity",
             dataIndex: "_id",
@@ -99,11 +107,23 @@ const CartPage = () => {
         },
         {
             title: "Price Single Piece",
-            dataIndex: "price"
-        },
-        {
+            dataIndex: "_id",
+            render: (id, record) => (
+              <Input
+                value={record.priceSingle}
+                onChange={(e) => handlePriceChange(record, e.target.value, "single")}
+              />
+            ),
+          },
+          {
             title: "Discount",
-            dataIndex: "discount"
+            dataIndex: "_id",
+            render: (id, record) => (
+              <Input
+                value={record.discount}
+                onChange={(e) => handleDiscountChange(record, e.target.value)}
+              />
+            ),
         },
         {
             title: "Actions",
@@ -116,37 +136,46 @@ const CartPage = () => {
     ];
     const [selectedCustomer, setSelectedCustomer] = useState(false);
 
+    
+    const handlePriceChange = (item, value, type) => {
+
+        const updatedCartItems = cartItems.map((data) =>
+        data._id === item._id
+            ? { ...data, [type === "single" ? "priceSingle" : "priceCartoons"]: value }
+            : data
+        );
+
+        console.log("updated", updatedCartItems)
+        dispatch({ type: "UPDATE_CART_ITEMS", payload: updatedCartItems });
+     
+      };
+      const handleDiscountChange = (item, value) => {
+        const updatedCartItems = cartItems.map((data) =>
+            data._id === item._id ? { ...data, discount: parseFloat(value) || 0 } : data
+        );
+        dispatch({ type: "UPDATE_CART_ITEMS", payload: updatedCartItems });
+    };
+
     const [customerData, setCustomerData] = useState({});
-    // const handleSearch = (e) => {
-
-    //     const searchValue = e.target.value;
-
-    //     if (searchValue) {
-    //         const arr = records.find((item) => item.customerName.includes(searchValue));
-    //         setFilter(arr);
-    //         setSelectedCustomer(arr?.customerName);
-    //         form.setFieldsValue({ ...form.getFieldsValue(), customerName: searchValue, customerNumber: arr?.customerNumber });
-    //     }
-    // }
+  
     const handleSearch = (e) => {
         const searchValue = e.target.value;
         const arr = records.find((item) => item.customerName.includes(searchValue));
-      
+
         if (arr) {
-          setSelectedCustomer(arr.customerName);
-          setCustomerData(arr);
-          form.setFieldsValue({ ...form.getFieldsValue(), customerName: searchValue, customerNumber: arr.customerNumber });
+            setSelectedCustomer(arr.customerName);
+            setCustomerData(arr);
+            form.setFieldsValue({ ...form.getFieldsValue(), customerName: searchValue, customerNumber: arr.customerNumber });
         } else {
-          setSelectedCustomer(null);
-          setCustomerData({}); // Reset customerData to empty when no customer is selected
-          form.setFieldsValue({ ...form.getFieldsValue(), customerName: "", customerNumber: "" });
+            setSelectedCustomer(null);
+            setCustomerData({}); // Reset customerData to empty when no customer is selected
+            form.setFieldsValue({ ...form.getFieldsValue(), customerName: "", customerNumber: "" });
         }
-      };
-    console.log("slected sutomer", selectedCustomer, customerData)
+    };
 
     const getRecords = async () => {
         try {
-            const response = await axios.get('http://localhost:8080/api/bills/get-bills');
+            const response = await axios.get('http://localhost:8080/api/bills/get-latest-bills');
             setRecords(response?.data);
         } catch (error) {
             console.log(error);
@@ -154,45 +183,51 @@ const CartPage = () => {
     };
 
 
-
-
     useEffect(() => {
         let temp = 0;
         cartItems.forEach(item => {
-            temp = temp + ((item.price * item.singleQuantity) + ((item.priceCartoons * item.cartoonsQuantity) - (((item.priceCartoons * item.cartoonsQuantity) / 100) * item.discount).toFixed(2)))
-        })
-        setTotal({ ...total, subTotal: temp })
+          temp = temp + (
+              (item.priceSingle * item.singleQuantity) + 
+              ((item.priceCartoons * item.cartoonsQuantity) - 
+              (((item.priceCartoons * item.cartoonsQuantity) / 100) * item.discount).toFixed(2))
+          );
+        });
+    
+        setTotal({ ...total, subTotal: temp });
         getRecords();
-    }, [cartItems])
+    }, [cartItems]);
+  console.log(records, "records")
+
     const handleSubmit = async (value) => {
         console.log(value) // customerName and customerNumber is not present here
         try {
             const newObject = {
                 ...value,
-                cartItems,
+                cartItems: cartItems.map(item => ({
+                    ...item,
+                    price: item.price,
+                    priceCartoons: item.priceCartoons
+                  })),
                 subTotal: selectedCustomer ? total.subTotal + customerData.remainingPayment : total.subTotal,
                 remainingPayment: Number(total.remainingBlance),
                 paidPayment: document.getElementById('paidInput').value,
-                // totalAmount: Number(total.subTotal),
                 totalAmount: selectedCustomer ? total.subTotal + customerData.remainingPayment : total.subTotal,
-                // customerId: selectedCustomer ? customerData.customerId : null
                 customerId: selectedCustomer ? customerData._id : null
             }
             if (selectedCustomer) {
                 newObject.customerId = customerData._id;
             }
 
-            console.log(newObject , customerData._id)
+            console.log(newObject, customerData._id)
 
             await axios.post('http://localhost:8080/api/bills/add-bills', newObject)
             message.success("Bill Generated")
             navigate('/bills', {
                 state: {
                     customerId: selectedCustomer ? customerData._id : null,
-                    // totalAmount: total.subTotal,
                     remainingPayment: total.remainingBlance,
                     subTotal: selectedCustomer ? total.subTotal + customerData.remainingPayment : total.subTotal,
-                    
+
                 },
             })
         } catch (error) {
@@ -201,6 +236,8 @@ const CartPage = () => {
         }
 
     }
+
+
     const onDiscountChange = (value) => {
         console.log(value)
         if (selectedCustomer === false) {
@@ -213,11 +250,18 @@ const CartPage = () => {
             // console.log(setTotal)
         }
     }
+    
+
+
     useEffect(() => {
         const selectedRecord = records.find((item) => item.customerName === selectedCustomer);
         setCustomerData(selectedRecord || {});
 
     }, [selectedCustomer, records]);
+
+
+
+
     return (
         <DefaultLayout>
             <h1>CartPage</h1>

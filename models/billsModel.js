@@ -9,7 +9,7 @@ const billSchema = mongoose.Schema({
     customerNumber: {
         type: Number,
         required: true
-    },
+    }, 
     totalAmount: {
         type: Number,
         required: true
@@ -17,11 +17,7 @@ const billSchema = mongoose.Schema({
     subTotal: {
         type: Number,
         required: true
-    },
-    // tax: {
-    //     type: Number,
-    //     required: true
-    // },
+    },   
     paidPayment: {
         type: Number,
     },
@@ -40,7 +36,8 @@ const billSchema = mongoose.Schema({
     date:{
       type: Date,
       default: Date.now()
-    }
+    },
+  
   
 },
 {timestamp: true}
